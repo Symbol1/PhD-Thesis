@@ -1,0 +1,907 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = XeLaTeX
+% !TEX spellcheck = English
+% !TEX pdfSinglePage
+
+
+
+{\let~\catcode~13=13\def^^M{^^J}~` 12~`\%12~`~12\xdef\asciiart{
+                                                                                  
+            ...                         .          ..       ..                    
+         xH88"`~ .x8X      .uef^"      @88>  x .d88"  x .d88"    ..               
+       :8888   .f"8888Hf :d88E         %8P    5888R    5888R    @L                
+      :8888>  X8L  ^""`  `888E          .     '888R    '888R   9888i   .dL        
+      X8888  X888h        888E .z8k   .@88u    888R     888R   `Y888k:*888.       
+      88888  !88888.      888E~?888L ''888E`   888R     888R     888E  888I       
+      88888   %88888      888E  888E   888E    888R     888R     888E  888I       
+      88888 '> `8888>     888E  888E   888E    888R     888R     888E  888I       
+      `8888L %  ?888   !  888E  888E   888E    888R     888R     888E  888I       
+       `8888  `-*""   /   888E  888E   888&   .888B .  .888B .  x888N><888'       
+         "888.      :"   m888N= 888>   R888"  ^*888%   ^*888%    "88"  888        
+           `""***~"`      `Y"   888     ""      "%       "%            88F        
+                               J88"                                   98"         
+                               @%                                   ./"           
+                             :"                                    ~`             
+                                                                                  
+}}\makeatletter
+
+
+
+\documentclass[14pt,aspectratio=1610]{beamer}
+	\beamertemplatenavigationsymbolsempty
+	\setbeamercovered{transparent}
+	\setbeamersize{text margin left=3mm,text margin right=3mm}
+	\overfullrule1em
+	\def\pp{\pause\par}
+	\advance\parskip\fill
+	\def\CMH{\gdef\beamer@currentmode{handout}}
+	\def\CMB{\gdef\beamer@currentmode{beamer}}
+
+\catcode`激13 \def激#1{\lccode`~`#1\lowercase{\catcode`#113\def~}}
+	激色#1!#2#3#4#5#6#7{\definecolor{#1}{HTML}{#2#3#4#5#6#7}}
+	% https://marketing.illinois.edu/brand/design/color
+	色Illini Orange!FF552E		色Altgeld!DD3403				色Illini Blue!13294B		
+	色Alma! 1E3877色Industrial! 1D58A7色Arches! 009FD4色Cloud! F8FAFC色Heritage! F5821E
+	色Alma2!4D69A0色Industrial2!5783BC色Arches2!7FC3E1色Cloud2!E8E9EB色Heritage2!E56E15
+	色Alma3!849BC1色Industrial3!90AED5色Arches3!A6D7EB色Cloud3!DDDEDE色Heritage3!CE5E11
+	色Alma4!AFC7DB色Industrial4!CAD9EF色Arches4!D2EBF5色Cloud4!D2D2D2色Heritage4!B74D04
+
+	\setbeamercolor{normal text}{bg=Illini Blue,fg=Cloud}
+	\setbeamercolor{structure}{fg=Illini Orange}
+	\setbeamercolor{alerted text}{fg=Heritage}
+	\setbeamercolor{example text}{fg=Arches}
+
+\usepackage{xurl}
+	\hypersetup{pdfsubject=94A24; 68P30; math.IT}
+	\hypersetup{colorlinks,linkcolor=Heritage,citecolor=Altgeld,urlcolor=Arches}
+
+\usepackage{mathtools}
+
+\usepackage[warnings-off={mathtools-colon,mathtools-overbracket}]{unicode-math}
+	\setmainfont{Times}
+	\setsansfont{HelveticaNeue-Light}
+	\setmonofont{Menlo}
+	\setmathfont[sans-style=literal]{texgyrepagella-math.otf}
+	
+	\DeclareMathOperator*\argmax{argmax}
+	\DeclareMathOperator*\mybest{do-my-best}
+	\DeclareMathOperator\hwt{hwt}
+	\DeclareMathOperator\poly{poly}
+	\def\P{P_\mathrm e}
+	
+	\def\({\bigl(}	\def\){\bigr)}	激（{\Bigl(}		激）{\Bigr)}		
+	激［{\bigl[}		激］{\bigr]}		激「{\Bigl[}		激」{\Bigr]}		
+	激｛{\bigl\{}	激｝{\bigr\}}	激『{\Bigl\{}	激』{\Bigr\}}	
+	激【{\lvert}		激】{\rvert}	
+	
+	激㏒{\log}		激㏑{\ln}		
+	激ˆ{\hat}		激¯{\bar}		
+	激｜{\mid}		激：{\colon}		激；{\mathrel;\nobreak}		
+	激÷{\frac}		激√{\sqrt}		激¬{\limits}		
+	激†#1†{{\text{#1}}}				
+	激⋆{\raisebox{1ex}{$\star$}}
+	
+	\def\J#1{^{(#1)}}
+	\def\W#1{W\J{#1}}
+	\def\WW#1#2{(\W{#1})\J{#2}}
+	\def\WWW#1#2#3{\(\WW{#1}{#2}\)\J{#3}}
+	\def\WWWW#1#2#3#4{（\WWW{#1}{#2}{#3}）\J{#4}}
+	\def\Q#1{Q\J{#1}}
+	\def\QQ#1#2{(\Q{#1})\J{#2}}
+	\def\QQQ#1#2#3{\(\QQ{#1}{#2}\)\J{#3}}
+	\def\G#1{G\J{#1}}
+	\def\GG#1#2{\G{#1#2}}
+
+\usepackage{tikz,tikz-cd}
+	\pgfmathsetseed{32652}\let\PMP\pgfmathparse\def\PMR{\pgfmathresult}
+	\let\PMS\pgfmathsetmacro\let\PMT\pgfmathtruncatemacro\let\PMD\pgfmathdeclarefunction
+	% https://tex.stackexchange.com/q/420034/
+	\PMD*{axis_height}0{\begingroup\pgfmathreturn.25em\endgroup}
+	\PMD*{rule_thickness}0{\begingroup\pgfmathreturn.06em\endgroup}
+	\tikzset{
+		every picture/.style={cap=round,join=round,line width=rule_thickness},
+		% https://tex.stackexchange.com/q/146908/
+		alt/.code args={<#1>#2#3}{\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}},
+		uncover/.style={alt=<#1>{}{opacity=.15}},
+	}
+	\def\channeltree#1<#2:#3v#4v#5;{
+		\edef\d{#1}\edef\dept{#2}\edef\zbottom{#3}\edef\z{#4}\edef\ztop{#5}
+		\ifnum\d<\dept
+		\ifdim\z pt<\ztop pt
+		\ifdim\z pt>\zbottom pt{
+			\advance\c@beamerpauses1
+			\edef\dplus{\the\numexpr\d+1}
+			{
+				\PMS\zup{\z*(256-\z)/128}
+				\onslide<.->{\draw(\d,\z/32)--(\dplus,\zup/32);}
+				\channeltree\dplus<\dept:\zbottom v\zup v\ztop;
+			}
+			{
+				\PMS\zdown{\z^2/128}
+				\onslide<.->{\draw(\d,\z/32)--(\dplus,\zdown/32);}
+				\channeltree\dplus<\dept:\zbottom v\zdown v\ztop;
+			}
+		}\fi\fi\fi
+		\onslide<.->{\fill(\d,\z/32)circle(1pt);}
+	}
+
+\usepackage{pgfplotstable,booktabs,colortbl}
+	\pgfplotsset{compat/.cd,show suggested version=false,=1.17}
+	\pgfplotstableset{
+		every head row/.style={before row=\toprule,after row=\midrule},
+		every last row/.style={after row=\bottomrule},string type,
+	}
+	\def\arraystretch{1.44}
+
+\title[Complexity \& 2-Moment of Communication]{
+	Complexity and Second Moment of	\\
+	the Mathematical Theory of Communication
+}
+\author[H-P\ Wang]{Hsin-Po WANG}
+\institute{Department of Mathematics, University of Illinois at Urbana--Champaign}
+\date[2021-04]{2021-04-01 PhD Defense Presentation}
+
+\begin{document}
+\message{\asciiart}
+\makeatletter
+
+\def\linkfil#1{\vbox to#1cm{\hbox{.}\vfil\hbox to3mm{\hfil.}}\vfil}
+\defbeamertemplate*{sidebar left}{thinbold}{
+	\pgfsetfillopacity0
+	\hyperlinkframeendprev{\linkfil1}
+	\hyperlinkslideprev{\linkfil3}
+	\hyperlinkslidenext{\linkfil3}
+	\hyperlinkframestartnext{\linkfil1}
+	\pgfsetfillopacity1\vfilneg\vfilneg
+}
+
+\frame\maketitle
+
+\defbeamertemplate*{sidebar right}{thinbold}{
+	\tikz[remember picture,overlay,x=3mm,y=\paperheight]{\footnotesize
+		\PMS\olfrac{\insertoverlaynumber/(\insertframeendpage+1-\insertframestartpage)}
+		\path[save path=\stare,yscale={1/max(\insertmainframenumber-1,1)}]
+			(0,0)-|(-1,1-\insertframenumber)-|+(\olfrac,1)-|cycle;
+		\tikzset{banner/.pic={\node at(-.55,-.5)[rotate=-90]
+			{\beamer@shorttitle~~\beamer@shortdate~~\beamer@shortauthor};}}
+		\fill[use path=\stare,Alma3]pic[Alma4]{banner};
+		\clip[use path=\stare]pic[Illini Blue]{banner};
+	}
+}
+
+\CMB
+
+\frame{{Noisy channel}
+	The sender inputs  $X₁³²=\texttt{11001001 00001111 11011010 10100010}$.
+	\pp
+	The channel outputs $Y₁³²=\texttt{1--01-01 ----1--- -101---0 --0--0-0}$.
+}
+
+\frame{{Noisy channel}
+	Sender inputs $X₁³²∈𝔽_q³²$, where $𝔽_q$ is called input alphabet.	\\
+	WLoG, we may assume $𝔽_q$ is a finite field [new idea].
+	
+	The channel outputs $Y₁³²$ according to transition probabilities
+	$P\{Y_j=y｜X_j=x\}=W(y|x)$ independently for each $j$.
+}
+
+\frame{{Noisy-channel coding}
+	The encoder inputs $X₁³²∈ℬ⊊𝔽_q^{32}$ into a channel.	\\
+	$ℬ$ is a \emph{block code} (sometimes a \emph{codebook}) of block length $N=32$.
+	\pp
+	The channel outputs $Y₁³²$ according to $W(y|x)$.
+	\pp
+	The decoder, seeing $Y₁³²=y₁³²$, maximizes the posterior probability	\\
+	$ˆX₁³²(y₁³²)≔{\alt<+(1)>{\color{alerted text.fg}\mybest}
+		\argmax¬_{x₁³²∈ℬ}}P\{X₁³²=x₁³²｜Y₁³²=y₁³²\}$.
+}
+
+\frame{{Noisy-channel coding theorem}
+	Channel capacity $C≔\sup¬_{\!X∼Q\!}I(X；Y)$ (supremum over input distribution).	\\
+	Block length is $N$.	\\
+	Error probability is $\P≔P\{ˆX₁^N≠X₁^N\}$.	\\
+	Code rate is $R≔㏑【ℬ】\div㏑【𝔽_q^N】$.	\hfill(recall that $ℬ⊂𝔽_q^N$)	
+	\pp
+	[Shannon 1948]	\\
+	\emph{
+		One can find block codes $ℬ$ such that $\P→0$ and $R→C$ as $N→∞$.	\\
+		(And $C$ is the greatest number that allows this to happen.)
+	}
+}
+
+\frame{{2nd-order term of coding}
+	How fast do error probability $\P$ and code rate $R$ converge to $0$ and $C$	\\
+	as block length $N→∞$? Characterize functions ``$\P(N)$'' and ``$R(N)$''.
+	\pp
+	When $R$ is fixed, $\P≈e^{-N}$; or equivalently, $-㏑\P≈N$.	\\
+	Fano \cite{Fano61},
+	Gallager \cite{Gallager65},
+	Shannon--Gallager--Berlekamp \cite{SGB67},
+	\cite{Gallager68},
+	\cite{Gallager73},
+	Blahut \cite{Blahut74},
+	Barg--Forney \cite{BF02},
+	Fàbregas--Land--Martinez \cite{FLM11},
+	Domb--Zamir--Feder \cite{DZF16}.
+	\pp
+	When $\P$ is fixed, $R≈C-N^{-1/2}$; or equivalently, $(C-R)^{-2}≈N$.	\\
+	Wolfowitz \cite{Wolfowitz57},
+	Weiss \cite{Weiss60},
+	Dobrushin \cite{Dobrushin61},
+	Strassen \cite{Strassen62},
+	Baron--Khojastepour--Baraniuk \cite{BKB04},
+	Hayashi \cite{Hayashi09},
+	Polyanskiy--Poor--Verdu \cite{PPV10}.
+}
+
+
+\frame{{Joint 2nd-order term of coding}
+	When both $R$ and $\P$ vary, $(\P,R)≈(e^{-N^π},C-N^{-ρ})$ where $π+2ρ=1$;	\\
+	or equivalently, $(-㏑\P)(C-R)^{-2}≈N$.	\\
+	Altuğ--Wagner \cite{AW10},
+	Polyanskiy--Verdú \cite{PV10},
+	\cite{AW14},
+	Hayashi--Tan \cite{HT15}.
+	\pp
+	This is a two-sided bound:	\\
+	A code $ℬ$ exists such that $(-㏑\P)(C-R)^{-2}≈N$.	\\
+	No code $ℬ$ exists such that $(-㏑\P)(C-R)^{-2}≫ N$.
+	\pp
+	Block length $N$ is your income;	\\
+	invest in error probability $\P$ or in code rate $R$ or in both.
+}
+
+激分#1#2{÷{#1\rule{0ex}{1.5ex}}{#2\rule[-1ex]{0ex}{0ex}}}
+\pgfplotstableread{
+	Par	Paradigm						&	{Random variable}					
+	LLN	{law of large numbers}			&	¯X→μ								
+	LDP	{large deviation principle}		&	ℙ\{¯X-μ>x\}≈e^{-nI(x)}				
+	CLT	{central limit theorem}			&	¯X-μ∼𝒩(0,σ/√n)						
+	MDP	{moderate deviation principle}	&	分{-㏑ℙ\{¯X-μ>γ_nx\}}{γ_n²}≈nI(x)	
+}\tableTrinity
+\pgfplotstableread{
+	Par	&	{Random code}		{Polar code}				
+	LLN	&	(\P,R)→(0,C)		(\P,R)→(0,C)				
+	LDP	&	\P≈e^{-N}			\P≈e^{-N^{0.99}}			
+	CLT	&	C-R≈N^{-1/2}		C-R≈N^{-0.49}				
+	MDP	&	分{-㏑\P}{(C-R)²}≈N	分{-㏑\P}{(C-R)²}≈N^{0.99}	
+}\tableCoding
+\pgfplotstablecreatecol[create col/copy column from table=\tableCoding{Random code}]
+	{Random code}\tableTrinity
+\pgfplotstablecreatecol[create col/copy column from table=\tableCoding{Polar code}]
+	{Polar code}\tableTrinity
+\pgfplotstablemodifyeachcolumnelement{Paradigm}\of\tableTrinity\as\cell
+	{\edef\cell{\noexpand\footnotesize\unexpanded\expandafter{\cell}}}
+\pgfplotstablemodifyeachcolumnelement{Random variable}\of\tableTrinity\as\cell
+	{\edef\cell{$\unexpanded\expandafter{\cell}$}}
+\pgfplotstablemodifyeachcolumnelement{Random code}\of\tableTrinity\as\cell
+	{\edef\cell{$\unexpanded\expandafter{\cell}$}}
+\pgfplotstablemodifyeachcolumnelement{Polar code}\of\tableTrinity\as\cell
+	{\edef\cell{$\unexpanded\expandafter{\cell}$}}
+
+\frame{{2nd-order term analog}
+	$$\pgfplotstabletypeset[
+		columns={Paradigm,Random variable,Random code},
+		columns/Random variable/.style={column type={>{\onslide<2->}c}},
+		columns/Random code/.style={column type={>{\onslide<3>}c}},
+	]\tableTrinity$$
+}
+
+\frame{{However...}
+	Achievability via random coding assumes exponential complexity	\\
+	due to the usage of the maximum a posteriori decoder $\argmax¬_{x₁³²∈ℬ}$.
+	\pp
+	Goal:
+	Comparable performance, but with a low-complexity $\mybest¬_{x₁³²∈ℬ}$.
+}
+
+\frame{{2nd-order term goal}
+	$$\pgfplotstabletypeset[
+		columns={Paradigm,Random code,Polar code},
+		columns/Polar code/.style={
+			column type={>{\onslide<2>}c},column name=Low-complexity code},
+	]\tableTrinity$$
+	
+	\hfill\onslide<2>($π,ρ>0$ and $π+2ρ<1)$
+}
+
+\pgfplotstableread{
+	Par		BEC			SBDMC		p-ary	q-ary	finite		BDMC	a-finite
+	LLN		Arikan09	Arikan09	STA09	STA09	STA09		SRDR12	w		
+	LDP⋆	AT09		AT09		STA09	MT10	Sasoglu11	HY13	w		
+	CLT⋆	KMTU10		HAU14		BGNRS18	w		w			w		w		
+	MDP⋆	GX15		GX15		BGS18	w		w			w		w		
+	LDP		KSU10		KSU10		w		w		w			w		w		
+	CLT		FHMV18		GRY20		w		w		w			w		w		
+	MDP		w			w			w		w		w			w		w		
+}\tableRefarray
+\def\assigncontent#1{\pgfkeyssetvalue{/pgfplots/table/@cell content}{#1}}
+\def\decodecontent#1#2\relax{
+	\if\pgfplotstablecol0	\assigncontent{#1#2}
+	\else\if#1w				\assigncontent{??}
+	\else					\assigncontent{\footnotesize\cite{#1#2}}
+	\fi\fi
+}
+\frame{{Polar coding}
+	$$\pgfplotstabletypeset[
+		columns/Par/.style={column type={>{\onslide<1->}c}},
+		columns/BEC/.style={column type={>{\onslide<2->}c}},
+		columns/SBDMC/.style={column type={>{\onslide<2->}c}},
+		columns/p-ary/.style={column type={>{\onslide<3->}c}},
+		columns/q-ary/.style={column type={>{\onslide<4->}c}},
+		columns/finite/.style={column type={>{\onslide<4->}c}},
+		columns/BDMC/.style={column type={>{\onslide<4->}c}},
+		columns/a-finite/.style={column type={>{\onslide<5->}c}},
+		assign cell content/.code={\decodecontent####1\relax}
+	]\tableRefarray$$
+}
+
+\frame{{Polar coding road map}
+	\textcolor{example text.fg}{Channel transformation}
+		manipulates channels.
+	
+	\textcolor{example text.fg}{Channel tree}
+		is the result of recursive channel transformation.
+	
+	\textcolor{example text.fg}{Channel parameter}
+		measures the channels and keep track of the tree.
+	
+	\textcolor{example text.fg}{Channel process}
+		is a syntax candy paraphrasing the tree.
+	
+	\textcolor{example text.fg}{Channel polarization}
+		is a phenomenon that channels become extreme.
+}
+
+\frame{{Channel transformation}
+	Consider a channel $W=(X｜Y)$, where input is $X$, output is $Y$.	\\
+	Make two i.i.d.\ copies $(X₁｜Y₁)$ and $(X₂｜Y₂)$.
+	\pp
+	$\W1≔(X₁-X₂｜Y₁²)$;	\\
+	$\W2≔(X₂｜(X₁-X₂)Y₁²)$.	\hfill(juxtaposition is tuple concatenation)
+}
+
+\frame{{Channel transformation (other kernel)}
+	$U₁²$: two free variables; $G$: a $2×2$ matrix (called kernel);	\\
+	$X₁²≔U₁²·G$: matrix multiplication; channels generate $Y₁²$ given $X₁²$.
+	
+	$\W1≔(U₁｜Y₁²)$;	\\
+	$\W2≔(U₂｜U₁Y₁²)$	\hfill(juxtaposition is tuple concatenation).
+}
+
+\frame{{Channel transformation (larger kernel)}
+	$U₁^ℓ$: many free variables; $G$: an $ℓ×ℓ$ matrix kernel;	\\
+	$X₁^ℓ≔U₁^ℓ·G$; channels generate $Y₁^ℓ$ given $X₁^ℓ$.
+	\pp
+	$\W1≔(U₁｜Y₁^ℓ)$;	\\
+	$\W2≔(U₂｜U₁Y₁^ℓ)$;	\\
+	$\W3≔(U₃｜U₁²Y₁^ℓ)$;	\\
+	$\phantom{\W{ℓ-1}}⋮$	\\
+	$\W{ℓ-1}≔(U_ℓ｜U₁^{ℓ-2}Y₁^ℓ)$;	\\
+	$\Wℓ≔(U_ℓ｜U₁^{ℓ-1}Y₁^ℓ)$.
+	\pause
+	\tikz[x=1em,y=-1em,overlay,shift={(7,-6)}]{
+		\draw
+			(0,.5)rectangle node(G){$·G$}(3,5.5)
+			foreach\j in{1,...,5}{
+				(-2,\j)node(U\j){$U_\j$}(U\j)-|(0,3)
+				(5,\j)node(X\j){$X_\j$}(3,3)|-(X\j)
+				(8,\j)node(Y\j){$Y_\j$}(X\j)--(Y\j)
+			}
+		;
+	}
+}
+
+\frame{{Channel tree}
+	Channel $W$ grows $\W1,\W2,…,\Wℓ$.
+	\pp
+	For each $i$, channel $\W i$ grows $\WW i1,…,\WW iℓ$.
+	\pp
+	For each $j$, channel $\WW ij$ grows $\WWW ij1,…,\WWW ijℓ$.
+	\pp
+	$$\tikz[
+		grow=right,
+		level/.style={
+			level distance=2em*####1,sibling distance=8em/2^####1,nodes={scale=7/8}
+		}
+	]{
+		\node{$W$}
+		child foreach\i in{1,2}{
+			node{$\W\i$}
+			child foreach\j in{1,2}{
+				node{$\WW\i\j$}
+				child foreach\k in{1,2}{
+					node{$\WWW\i\j\k$}
+				}
+			}
+		}
+	}$$
+}
+
+\frame{{Dynamic kernel [new idea*]}
+	Channel $W$ grows $\W1,\W2,…,\Wℓ$ using $G$.
+	\pp
+	For each $i$, channel $\W i$ grows $\WW i1,…,\WW iℓ$ using $\G i$.
+	\pp
+	$∀j$, channel $\WW ij$ grows $\WWW ij1,…,\WWW ijℓ$ using $\GG ij$.
+	\pp
+	$$\tikz[
+		grow=right,
+		level/.style={
+			level distance=2em*####1,
+			sibling distance=8em/2^####1,
+			nodes={scale=7/8}
+		}
+	]{
+		\node{$W$}
+		child foreach\i in{1,2}{
+			node{$\W\i$}
+			child foreach\j in{1,2}{
+				node{$\WW\i\j$}
+				child foreach\k in{1,2}{
+					node{$\WWW\i\j\k$}
+				}
+			}
+		}
+	}$$
+}
+
+%	$W$ grows $\W1$.
+%	$\W1$ grows $\WW11$ and $\WW12$;
+%	$\W2$ grows $\WW21$ and $\WW22$.
+%	$\WW11$ grows $\WWW111$ and $\WWW112$;
+%	$\WW12$ grows $\WWW121$ and $\WWW122$;
+%	$\WW21$ grows $\WWW211$ and $\WWW212$;
+%	$\WW22$ grows $\WWW221$ and $\WWW222$.
+
+\frame{{Channel parameter ($ℓ=2$ and $n=3$ exmaple)}
+	Block length $N=ℓ^n$; for instance $8=2³$.
+	\pp
+	Select indices $𝒥⊆\{1,…,ℓ\}^n$; for instance $\{122,212,221,222\}⊆\{1,2\}³$.	\\
+	Code rate $R=【𝒥】/N=4/8$ (nontrivial, due to implementation details).
+	\pp
+	Error probability $\P≤∑¬_{ijk∈𝒥}H（\WWW ijk）$ (nontrivial, due to details);	\\
+	$H(X｜Y)$ is conditional entropy with base-$q$ logarithm.
+}
+
+\frame{{It suffices to understand}
+	$H(W),H(\W i),H\(\WW ij\),H（\WWW ijk）,H（\WWWW ijkl）,…$\kern-2em
+	\pp
+	Block length $N$ will be $ℓ^†where we stop†$.
+	\pp
+	Code rate $R$ will be the fraction of small $H$-values.
+	\pp
+	Block error probability $\P$ will be $∑¬_†those†$ small $H$-values.
+}
+
+\frame{{Channel process (a powerful syntax candy)}
+	$𝘞₀≔W$.	\\
+	$𝘞_{n+1}≔𝘞_n^{(𝘑_{n+1})}$, where
+	$𝘑_{n+1}∈\{1,2,…,ℓ\}$ i.i.d.\ uniform branch chooser.
+	\pp
+	$𝘏_n≔H(𝘞_n)$.
+	\pp
+	Decide depth $n$, then block length is $N=ℓ^n$.	\\
+	Decide threshold $θ$, then code rate is $R=𝘗\{𝘏_n<θ\}$.	\\
+	Error probability is $\P<∑†small †𝘏_n<∑θ=RNθ≤Nθ$.
+}
+
+\frame{{Channel polarization}
+	$𝘏_n≔H(𝘞_n)$ is a martingale. (Invoke Doob's martingale convergence)	\\
+	$𝘏_n→𝘏_∞$ a.e.\ as $n→∞$; turns out $𝘏_∞∈\{0,1\}$ and $𝘗\{𝘏_∞=1\}=𝘏₀$.
+	
+	\onslide<+>{}
+	$$\tikz{
+		\path(0,0)circle(2pt)(0,4)circle(2pt);
+		\channeltree0<6:0v49v128;
+		\onslide<.(7)->{
+			\draw[alerted text.fg](6,1/4)--+(1,0)node[right]{threshold $θ$};}
+	}$$
+}
+
+
+\frame{{It suffices to understand}
+	\par
+	{\LARGE$𝘗\{𝘏_n<†threshold†\}>C-†gap†$.\par}
+	\pp
+	Goal: $𝘗｛𝘏_n<e^{-ℓ^{πn}}｝>C-ℓ^{-ρn}$ for large $n$, where $π+2ρ<1$.	\\
+	Then: $N=ℓ^n$ and $\P<Ne^{-N^π}≈e^{-N^π}$ and $R>C-N^{-ρ}$ .
+}
+
+\frame{{Proof outline}
+	\textcolor{example text.fg}{Local LDP behavior:}
+	$Z(\W j)≤ℓe^{qZ(W)ℓ}(qZ(W))^{⌈j^2/3ℓ⌉}$,	\\
+	where $Z$ is a parameter such that $Z≤q³√H$ and $H≤q³√Z$.
+	
+	\textcolor{example text.fg}{Local CLT behavior:}
+	$∑¬_{j=1}^ℓh(H(\W j))<4ℓ^{1/2+α}$,	\\
+	where $α=㏑(㏑ℓ)/㏑ℓ$ and $h(z)≔\min(z,1-z)^α$.
+	
+	\textcolor{example text.fg}{Global MDP behavior:}
+	$𝘗｛𝘏_n<e^{-ℓ^{πn}}｝>C-ℓ^{-ρn}$,
+	where $π+2ρ<1$, given local LDP and local CLT behaviors.
+}
+
+\frame{{Local LDP behavior 1/3}
+	Want to prove $Z(\W j)≤ℓe^{qzℓ}(qz)^{⌈j^2/3ℓ⌉}$ where $z≔Z(W)$.
+	\pp
+	Fundamental theorem of polar:
+	$Z(\W j)≤∑¬_{u_{j+1}^ℓ∈𝔽_q^{ℓ-j}}z^{\hwt(0₁^{j-1}1_ju_{j+1}^ℓ·G)}$.	\\
+	RHS is the weight enumerator of a coset code.
+	\pp
+	$\W1≔(U₁｜Y₁^ℓ)$;	\\
+	$\W2≔(U₂｜U₁Y₁^ℓ)$;	\\
+	$\phantom{\W2}⋮$	\\
+	$\Wℓ≔(U_ℓ｜U₁^{ℓ-1}Y₁^ℓ)$.
+	\tikz[x=1em,y=-1em,overlay,shift={(6,-5)}]{
+		\draw
+			(0,.5)rectangle node(G){$·G$}(3,5.5)
+			foreach\j in{1,...,5}{
+				(-2,\j)node(U\j){$U_\j$}(U\j)-|(0,3)
+				(5,\j)node(X\j){$X_\j$}(3,3)|-(X\j)
+				(8,\j)node(Y\j){$Y_\j$}(X\j)--(Y\j)
+			}
+		;
+	}
+}
+
+\frame{{Local LDP behavior 2/3}
+	Want $∑¬_{u_{j+1}^ℓ}z^{\hwt(0₁^{j-1}1_ju_{j+1}^ℓ·G)}
+		≤ℓe^{qzℓ}(qz)^{⌈j^2/3ℓ⌉}$ for some $G$.
+	\pp
+	Draw random $𝔾$ instead; $𝔼[†LHS†]=q^{-j}(1+(q-1)z)^ℓ≤q^{-j}(1+qz)^ℓ$.
+	\pp
+	Compare $(qz)^w$-coefficients:
+	$q^{-j}\binomℓw$ vs $ℓ÷{ℓ^{w-⌈j^2/3ℓ⌉}}{(w-⌈j^2/3ℓ⌉)!}$.
+	\pp
+	Simplify: $2^{-j}\binomℓ{⌈j^2/3ℓ⌉}\binom{ℓ-⌈j^2/3ℓ⌉}{w-⌈j^2/3ℓ⌉}$
+	vs $ℓ\binomℓ{w-⌈j^2/3ℓ⌉}$.
+}
+
+\PMD{h2o}1{% := h2(sin(#1)^2)
+	\PMS\sin{sin(#1)}\PMS\cos{cos(#1)}%
+	\ifdim\sin pt=0pt%
+		\PMP{0}%
+	\else\ifdim\cos pt=0pt%
+		\PMP{0}%
+	\else%
+		\PMP{(-\sin*ln(\sin)*\sin-\cos*ln(\cos)*\cos)*2.88539}% 2/ln(2)
+	\fi\fi%
+}
+\frame{{Local LDP behavior 3/3}
+	Boils down to $2^{-j}\binomℓ{⌈j^2/3ℓ⌉}$ vs $ℓ$;
+	ignore $⌈⌉$ and $ℓ$; compare $\binomℓ{j^2/3ℓ}$ vs $2^j$.
+	\pp
+	$\binomℓd≈2^{ℓh_2(d/ℓ)}$ for $d=Θ(ℓ)$. (Large deviations theory.)	\\
+	Hence $h_2(j^2/3ℓ^2)$ vs $j$, which becomes $√{3x}$ vs $h_2(x)$.
+	\pp
+	$$\tikz[scale=4]{
+		\path(0,0)--(1,1);
+		\tikzset{
+			shift={(.2,.8)},
+			scale={1.2^max(0,\insertoverlaynumber-\c@beamerpauses)},
+			shift={(-.2,-.8)},
+		}
+		\draw[overlay]plot[domain=0:90,samples=90]({sin(\x)^2},{h2o(\x)});
+		\draw[overlay]plot[domain=0:1,samples=20](\x^2/e,\x);
+		\only<+(10)>{}
+	}$$
+}
+
+\frame{{Local CLT behavior 1/4}
+	Want to prove $∑¬_{i=1}^ℓh(H(\W i))<4ℓ^{1/2+α}$,	\\
+	where $α=㏑(㏑ℓ)/㏑ℓ$ and $h(z)≔\min(z,1-z)^α$.
+	\pp
+	Break into three segments
+	$\begin{cases}
+		∑¬_{i=⌈H(W)+ℓ^{-1/2+α}⌉+1}^ℓh(H(\W i))<ℓ^{1/2+α},	\\
+		∑¬_{i=⌊H(W)-ℓ^{-1/2+α}⌋}^{⌈H(W)+ℓ^{-1/2+α}⌉}h(H(\W i))<2ℓ^{1/2+α}, \\
+		∑¬_{i=1}^{⌊H(W)-ℓ^{-1/2+α}⌋-1}h(H(\W i))<ℓ^{1/2+α}.
+	\end{cases}$
+	\pp
+	\tikz[overlay,shift={(1,-1)}]{
+		\draw(0,0)[domain=0:3.1748]plot(\x^3/16,\x)plot(4-\x^3/16,\x);
+		\fill foreach\y in{.1,.2,.3,.5,.8,1.3,2.1}{(\y^3/16,\y)circle(2pt)};
+		\fill foreach\y in{.1,.2,.4,.8,1.6}{(4-\y^3/16,\y)circle(2pt)};
+	}
+}
+
+\frame{{Local CLT behavior 2/4}
+	Want $∑¬_{i=j+1}^ℓh(H(\W i))<ℓ^{1/2+α}$, where $j≔⌈H(W)+ℓ^{-1/2+α}⌉$.
+	\pp
+	Jensen LHS; want to show $(ℓ-j)h（÷1{ℓ-j}∑¬_{i=j+1}^ℓH(\W i)）<ℓ^{1/2+α}$.
+	\pp
+	$\phantom{\W{ℓ-2}}⋮$	\\
+	$\W{ℓ-2}≔(U_{ℓ-2}｜U₁^{ℓ-3}Y₁^ℓ)$,	\\
+	$\W{ℓ-1}≔(U_{ℓ-1}｜U₁^{ℓ-2}Y₁^ℓ)$,	\\
+	$\Wℓ≔(U_ℓ｜U₁^{ℓ-1}Y₁^ℓ)$.
+	\hfill$\smash{∑¬_{i=j+1}^ℓ}H(\W i)=H(U_{j+1}^ℓ｜U₁^jY₁^ℓ)$.
+}
+
+\frame{{Local CLT behavior 3/4}
+	What is $H(U_{j+1}^ℓ｜U₁^jY₁^ℓ)$?	\hfill($j≔⌈H(W)+ℓ^{-1/2+α}⌉$)
+	\pp
+	It is the conditional entropy of	\\
+	noisy-channel coding.
+	\tikz[x=1em,y=-1em,overlay,shift={(9,-2)}]{
+		\draw
+			(0,.5)rectangle node(G){$·G$}(3,5.5)
+			foreach\k in{1,...,5}{
+				(-2,\k)node(U\k)[opacity={\k<3?0:1}]{$U_\k$}(U\k)-|(0,3)
+				(5,\k)node(X\k){$X_\k$}(3,3)|-(X\k)
+				(8,\k)node(Y\k){$Y_\k$}(X\k)--(Y\k)
+			}
+		;
+	}
+	\pp
+	Gallager has good bounds.
+}
+
+\frame{{Local CLT behavior 4/4}
+	The last segment: $∑¬_{i=1}^{j}h(H(\W i))<4ℓ^{1/2+α}$.	\\
+	Pre-process by Jensen inequality: $jh（÷1j∑¬_{i=1}^{j+1}H(\W i)）<4ℓ^{1/2+α}$.	\\
+	Chain rule: $jh（÷1jH(U₁^j｜Y₁^ℓ)）$, but what is $H(U₁^j｜Y₁^ℓ)$?
+	\pp
+	Wiretap channel [new idea];	\\
+	Hayashi has good bounds.
+	\tikz[x=1em,y=-1em,overlay,shift={(9,-4)}]{
+		\def\comment{\llap{\ifnum\k<3 message \else obscure \fi}}
+		\draw
+			(0,.5)rectangle node(G){$·G$}(3,5.5)
+			foreach\k in{1,...,5}{
+				(-2,\k)node(U\k){\comment$U_\k$}(U\k)-|(0,3)
+				(5,\k)node(X\k){$X_\k$}(3,3)|-(X\k)
+				(8,\k)node(Y\k){$Y_\k$}(X\k)--(Y\k)
+			}
+		;
+	}
+}
+
+\frame{{A calculus machinery [new idea]}
+	Given local LDP behavior: $Z(\W j)≤ℓe^{qZ(W)ℓ}(qZ(W))^{⌈j^2/3ℓ⌉}$	\\
+	and local CLT behavior: $∑¬_{j=1}^ℓh(H(\W j))<4ℓ^{1/2+α}$.
+	\pp
+	eigen: $𝘌[h(𝘏_{n+1})｜𝘏₀,…,𝘏_n]≤ℓ^{-1/2+3α}h(𝘏_n)$.
+	\pp
+	en23: $𝘗｛𝘡_n<e^{-n^{2/3}}｝>1-H(W)-ℓ^{(-1/2+4α)n}$.
+	\pp
+	een13: $𝘗『𝘡_n<\exp\(-e^{n^{1/3}}\)』>1-H(W)-ℓ^{(-1/2+4α)n}$.
+	\pp
+	elpin: $𝘗｛𝘡_n<e^{-ℓ^{πn}}｝>1-H(W)-ℓ^{-ρn}$.
+}
+
+\frame{{Summary of the proof}
+	For local LDP behavior, we investigate the distance of a random matrix.
+	\pp
+	For local CLT, noisy-channel coding and wiretap-channel coding.
+	\pp
+	For the global MDP behavior, a calculus machinery is invented/used.
+}
+
+\frame{{Summary of my results so far}
+	For all $π+2ρ<1$, there exist codes with	\\
+	error probability $\P<e^{-N^π}$	and code rate $R>C-N^{-ρ}$.
+	\pp
+	When only $2×2$ kernels are allowed, at least $π,ρ>0$.
+	\pp
+	It happens that they have complexity $O(㏒N)$ per bit.
+	\pp
+	Can we reduce the complexity further	\\
+	(at the expense of worse performance etc)?
+}
+
+\frame{{Prune the tree for simplicity}
+	The bottom channel is good enough before we reach our favorite $n$.
+	
+	\onslide<+>{}
+	$$\tikz{
+		\path(0,0)circle(2pt)(0,4)circle(2pt);
+		\channeltree0<6:8v49v128;
+		\onslide<.(2)->{\draw[alerted text.fg](\insertoverlaynumber-1,1/4)--(7,1/4)
+			node[right]{threshold $θ$};}
+	}$$
+	
+	\onslide<.(2)->{Why do we apply transform any further? (Answer: we don't!)}
+}
+
+\frame{{Prune the other side}
+	Sometimes, the top channel is too bad.	\\
+	Do we expect any of its descendants to be good enough?
+	
+	\onslide<+>{}
+	$$\tikz{
+		\path(0,0)circle(2pt)(0,4)circle(2pt);
+		\channeltree0<6:8v49v120;
+		\onslide<.(3)->{\draw[example text.fg](\insertoverlaynumber-1,4-1/4)--(7,4-1/4)
+			node[right]{threshold $1-θ$};}
+		\onslide<.(2)->{\draw[alerted text.fg](\insertoverlaynumber-1,1/4)--(7,1/4)
+			node[right]{threshold $θ$};}
+	}$$
+	
+	\onslide<.(3)->{We don't.}
+}
+
+\frame{{Stopping time analysis}
+	$𝘞_n$ has children/needs further transformation if $θ<𝘏_n<1-θ$.
+	\pp
+	Set $θ=N^{-10}$; assume $m>O(㏒(㏒N))$, then $e^{-2^{πm}}<θ$.
+	\pp
+	Then $𝘗\{𝘏_m<θ\}>𝘗｛𝘏_m<e^{-2^{πm}}｝≥H(W)-ℓ^{-ρm}$
+	and $𝘗\{𝘏_m>1-θ\}>𝘗｛H_m>1-e^{-2^{πm}}｝≥1-H(W)-ℓ^{-ρm}$
+	\pp
+	That is to say, $𝘗\{θ<𝘏_m<1-θ\}≤2ℓ^{-ρm}$, hard to stay in the middle.
+}
+
+\frame{{Geometric complexity}
+	Complexity $=$ \#transformations $=∑¬_{m=0}^n𝘗\{θ<𝘏_m<1-θ\}$.
+	\pp
+	$$\begin{cases}
+		∑¬_{m=O(㏒(㏒N))}^n𝘗\{θ<𝘏_m<1-θ\}≤∑¬_{m=O(㏒(㏒N))}^n2ℓ^{-ρm}=O(1),	\\
+		∑¬_{m=0}^{O(㏒(㏒N))}𝘗\{θ<𝘏_m<1-θ\}≤∑¬_{m=0}^{O(㏒(㏒N))}1=O(㏒(㏒N)).
+	\end{cases}$$
+	\pp
+	Complexity is $O(㏒(㏒N))$ per bit, or $O(N㏒(㏒N))$ per block.
+}
+
+\frame{{Summary of pruning and whatnot}
+	\pp
+	There exist codes with complexity $O(㏒(㏒N))$ per bit,	\\
+	error probability $\P<N^{-9}$, and code rate $R=C-N^{-ρ}$.
+	\pp
+	(Earlier) we have codes with complexity $O(㏒N)$ per bit,	\\
+	error probability $\P<e^{-N^π}$, and code rate $R>C-N^{-ρ}$.
+	\pp
+	Are there codes in between? Yes, continuously.
+}
+
+\frame{{Summary}
+	Log-log code taken from (with Duursma)	\\
+	Log-logarithmic Time Pruned Polar Coding	\\
+	\url{https://ieeexplore.ieee.org/document/9274497}.
+	
+	MDP code taken from (with Duursma)	\\
+	Polar Codes' Simplicity, Random Codes' Durability	\\
+	\url{https://ieeexplore.ieee.org/document/9274521}.
+}
+
+\frame{{Question?}
+	\inserttitlegraphic
+	
+	Predefined questions:	\\
+	What does each chapter in dissertation do?	\\
+	Why input alphabet is finite field? What is the  advantage?	\\
+	Definition of Bhattacharyya parameter?	\\
+	References for XYZ?	\\
+	Your contribution over others?	\\
+	Future plan?
+}
+
+\def\appendixname{Appendix}
+\appendix
+
+\pgfplotstableread{
+		Code				Error			Gap			Complexity		Channel		
+		random				e^{-N^π}		N^{-ρ}		\exp(N)			DMC			
+		concatenation		e^{-N^π}		→0			\poly(N)		DMC			
+		RM					→0				→0			O(N^2)			BEC			
+		LDPC				→0				→0			†unclear†		SBDMC		
+		{RA family}			→0				→0			O(1)			BEC			
+		old~prune			e^{-N^{1/2}}	O(1)		Θ(㏒N)			SBDMC		
+		{loglog-polar [W.]}	e^{-n^τ}		N^{-ρ}		O(㏒(㏒N))		DMC			
+		{MDP-polar [W.]}	e^{-N^π}		N^{-ρ}		O(㏒N)			DMC			
+}\tableComplex
+\pgfplotstablemodifyeachcolumnelement{Error}\of\tableComplex\as\cell
+	{\edef\cell{$\unexpanded\expandafter{\cell}$}}
+\pgfplotstablemodifyeachcolumnelement{Gap}\of\tableComplex\as\cell
+	{\edef\cell{$\unexpanded\expandafter{\cell}$}}
+\pgfplotstablemodifyeachcolumnelement{Complexity}\of\tableComplex\as\cell
+	{\edef\cell{$\unexpanded\expandafter{\cell}$}}
+\frame{
+	$$\pgfplotstabletypeset\tableComplex$$
+}
+
+\def\decodecontent#1#2\relax{
+	\if\pgfplotstablecol0	\assigncontent{#1#2}
+	\else\if#1w				\assigncontent{[W.]}
+	\else					\assigncontent{\footnotesize\cite{#1#2}}
+	\fi\fi
+}
+\frame{
+	$$\pgfplotstabletypeset[
+		every head row/.style={
+			before row=\toprule&\multicolumn5c{Symmetric}&\multicolumn2c{Asymmetric}\\,
+			after row=\midrule},
+		assign cell content/.code={\decodecontent####1\relax}
+	]\tableRefarray$$
+}
+
+激®{\color{alerted text.fg}}
+\frame{{Input alphabet [new idea]}
+	$\begin{bmatrix}
+		W(y₁|1)		&	W(y₂|1)		&	W(y₃|1)		&	⋯	\\
+		W(y₁|2)		&	W(y₂|2)		&	W(y₃|2)		&	⋯	\\
+		W(y₁|3)		&	W(y₂|3)		&	W(y₃|3)		&	⋯	\\
+		W(y₁|4)		&	W(y₂|4)		&	W(y₃|4)		&	⋯	\\
+		W(y₁|5)		&	W(y₂|5)		&	W(y₃|5)		&	⋯	\\
+		W(y₁|6)		&	W(y₂|6)		&	W(y₃|6)		&	⋯	\\
+		®W(y₁|6)	&	®W(y₂|6)	&	®W(y₃|6)	&	®⋯	\\
+	\end{bmatrix}$
+	\qquad
+	\tikz[x=4em,y=-2em,baseline=-8em]{
+		\draw[line width=1em+2*rule_thickness,postaction={draw=bg,line width=1em}]
+			(-1,1)--(-1,7)(0,1)--(0,6)(1,1)--(1,6);
+		\fill
+			foreach\y in{1,...,7}{(-1,\y)circle(2pt)}
+			foreach\y in{1,...,6}{(0,\y)circle(2pt)}
+			foreach\y in{1,...,6}{(1,\y)circle(2pt)}
+		;
+		\draw[shorten <=3pt,shorten >=3pt]
+			foreach\y in{1,...,6}{(-1,\y)edge[->](0,\y)}
+			(-1,7)edge[->,alerted text.fg](0,6)
+			foreach\y in{1,...,6}{
+				(0,\y)edge[->](1,1+rnd*5)edge[->](1,1+rnd*5)
+			}
+		;
+	}
+}
+
+\frame{{Asymmetric channels \cite{HY13}}
+	Recall $U_j$ is the coordinate as in $X₁^ℓ≔U₁^ℓ·G$.	\\
+	The difficulty of asymmetric channels is $U_j$ being nonuniform and dependent.
+	
+	Define synthetic channel $\Q i≔(U_i｜U_1^{i-1})$.	\\
+	Define tree $\Q i,\QQ ij,\QQQ ijk,…$; define channel process $\{𝘘_n\}$.	\\
+	It polarizes, and at the same pace.
+	
+	High $H(𝘘_n)$ low $H(𝘞_n)$ vs both high vs both low.
+}
+
+\frame{{Bhattacharyya parameter}
+	Binary $Z(W)≔∑¬_{y∈𝒴}√{W(y|0)W(y|1)}$.
+	
+	Non-binary
+	$≔÷1{q-1}∑¬_{\substack{x,x'∈𝔽_q\\x≠x'}}∑¬_{y∈𝒴}√{W(x,y)W(x',y)}$. \\
+	{}[New idea] $≔\max¬_{0≠d∈𝔽_q}∑¬_{x∈𝔽_q}∑¬_{y∈𝒴}√{W(x,y)W(x+d,y)}.$
+}
+
+\frame{{A List of Important Contributions (Chronological)}
+	A combinatorial trick to recover scaling exponent (een13 $→$ elpin).
+	
+	The pruning technique/stopping time analysis/log-log complexity.
+	
+	Improved combinatorial trick (en23 $→$ een13 $→$ elpin).
+	
+	Dynamic kernel, later random dynamic kernel.
+	
+	Alphabet reduction to finite field (trivial but powerful and last mile).
+	
+	Improve definition of Bhattacharyya parameter, then and FTPC$Z$.
+	
+	Reducing local CLT to noisy-channel and wiretap-channel coding.
+	
+	For wiretap bound, extend the universal bound via continuation.
+	
+	A topological argument to show positive $ϱ$ (that is, CLT⋆).
+}
+
+%%%% Bi-Hölder toll
+
+\tiny
+\advance\lineskip0ptplus1em
+\advance\baselineskip0ptplus1em
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{bibliography entry author}{\bgroup}
+\setbeamercolor{bibliography entry author}{fg=alerted text.fg}
+\setbeamercolor{bibliography entry location}{fg=normal text.fg}
+\setbeamertemplate{bibliography entry note}{\egroup}
+\bibliographystyle{alphaurl}
+\bibliography{Chilly-beamer}
+\vfil\hbox{}
+
+\frame{}
+
+\end{document}
+
+
+
+
